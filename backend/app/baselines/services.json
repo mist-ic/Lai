@@ -1,0 +1,40 @@
+{
+  "contract_type": "services",
+  "clauses": [
+    {
+      "clause_type": "indemnity",
+      "standard_text": "Each party shall indemnify, defend, and hold harmless the other party and its officers, directors, and employees from and against any third-party claims, damages, losses, and expenses (including reasonable attorneys' fees) arising from the indemnifying party's negligence, willful misconduct, or breach of this Agreement, provided that the indemnified party: (a) promptly notifies the indemnifying party of the claim; (b) grants reasonable control of the defense and settlement; and (c) provides reasonable cooperation at the indemnifying party's expense.",
+      "description": "Standard mutual indemnity covering negligence, willful misconduct, and breach with standard notice and cooperation conditions"
+    },
+    {
+      "clause_type": "limitation_of_liability",
+      "standard_text": "Neither party shall be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or business opportunities, regardless of the theory of liability. Each party's total aggregate liability arising out of or relating to this Agreement shall not exceed the total fees paid or payable by the Client under this Agreement, except for liability arising from a party's gross negligence, willful misconduct, or breach of confidentiality obligations.",
+      "description": "Standard liability cap at total contract value with consequential damages exclusion and customary carve-outs"
+    },
+    {
+      "clause_type": "governing_law",
+      "standard_text": "This Agreement shall be governed by and construed in accordance with the laws of [Jurisdiction], without regard to its conflict of laws principles. Any dispute arising out of or relating to this Agreement shall be subject to the exclusive jurisdiction of the courts located in [Venue], and the parties consent to personal jurisdiction therein.",
+      "description": "Standard governing law with exclusive jurisdiction in a named venue"
+    },
+    {
+      "clause_type": "termination",
+      "standard_text": "Either party may terminate this Agreement: (a) for convenience upon thirty (30) days prior written notice to the other party; or (b) for cause if the other party materially breaches this Agreement and fails to cure such breach within thirty (30) days after receipt of written notice describing the breach. Upon termination, the Client shall pay the Vendor for all services performed and expenses incurred up to the effective date of termination, and the Vendor shall deliver all work product completed as of that date.",
+      "description": "Standard services termination with 30-day notice for convenience and a 30-day cure period for cause"
+    },
+    {
+      "clause_type": "ip_ownership",
+      "standard_text": "Upon full payment of all applicable fees, all deliverables created by the Vendor specifically for the Client under this Agreement ('Deliverables') shall be the sole and exclusive property of the Client, and the Vendor hereby assigns all right, title, and interest in such Deliverables to the Client. The Vendor retains all right, title, and interest in any pre-existing materials, tools, methodologies, and know-how owned or developed by the Vendor independently of this Agreement ('Vendor IP'), and grants the Client a non-exclusive, perpetual license to use such Vendor IP solely as incorporated into the Deliverables.",
+      "description": "Standard services IP ownership where the client owns deliverables and the vendor retains pre-existing IP with a license-back"
+    },
+    {
+      "clause_type": "payment_terms",
+      "standard_text": "The Client shall pay the Vendor the fees set forth in the applicable Statement of Work. Unless otherwise specified, fees are invoiced upon completion of each agreed milestone and are due within thirty (30) days of the invoice date. Late payments shall accrue interest at the lesser of 1.5% per month or the maximum rate permitted by law. The Client is responsible for all undisputed amounts and shall raise any good-faith dispute in writing within fifteen (15) days of the invoice date.",
+      "description": "Standard services payment terms with milestone-based, net-30 invoicing and a reasonable late fee"
+    },
+    {
+      "clause_type": "confidentiality",
+      "standard_text": "Each party agrees to hold in confidence and not disclose to any third party the Confidential Information of the other party, using the same degree of care it uses to protect its own confidential information but no less than reasonable care, and to use such Confidential Information solely for the purpose of performing under this Agreement. Confidential Information may be disclosed only to employees, contractors, and advisors who have a need to know and are bound by confidentiality obligations at least as protective as those herein. This obligation shall survive for a period of three (3) years following termination of this Agreement.",
+      "description": "Standard mutual services confidentiality with need-to-know disclosure and 3-year survival"
+    }
+  ]
+}
