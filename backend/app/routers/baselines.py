@@ -3,8 +3,20 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.baseline import Baseline
+from app.seed_baselines import seed_baselines
 
 router = APIRouter(prefix="/api/baselines", tags=["baselines"])
+
+
+@router.post("/seed")
+async def reseed_baselines(db: Session = Depends(get_db)):
+    """Re-seed baselines from the bundled JSON files.
+
+    Idempotent: existing baselines are updated in place and missing ones are
+    inserted. Returns the number of rows inserted and updated.
+    """
+    summary = seed_baselines(db)
+    return {"status": "ok", **summary}
 
 
 @router.get("")
