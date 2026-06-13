@@ -4,24 +4,25 @@ Provides structured output (JSON schema) and text generation capabilities.
 """
 
 import json
-import os
 from typing import Any
 
 from google import genai
 from google.genai import types
 
+from app.config import settings
+
 
 def _get_client() -> genai.Client:
     """Get a configured Gemini client."""
-    api_key = os.getenv("GEMINI_API_KEY", "")
+    api_key = settings.GEMINI_API_KEY
     if not api_key:
-        raise ValueError("GEMINI_API_KEY environment variable is not set")
+        raise ValueError("GEMINI_API_KEY is not set in environment or .env file")
     return genai.Client(api_key=api_key)
 
 
 def _get_model() -> str:
     """Get the configured model name."""
-    return os.getenv("GEMINI_MODEL", "gemini-3.5-flash")
+    return settings.GEMINI_MODEL
 
 
 async def generate_text(
@@ -46,7 +47,7 @@ async def generate_text(
     if system_instruction:
         config.system_instruction = system_instruction
 
-    response = client.models.generate_content(
+    response = await client.aio.models.generate_content(
         model=_get_model(),
         contents=prompt,
         config=config,
@@ -82,7 +83,7 @@ async def generate_json(
     if system_instruction:
         config.system_instruction = system_instruction
 
-    response = client.models.generate_content(
+    response = await client.aio.models.generate_content(
         model=_get_model(),
         contents=prompt,
         config=config,
@@ -118,7 +119,7 @@ async def generate_with_thinking(
     if system_instruction:
         config.system_instruction = system_instruction
 
-    response = client.models.generate_content(
+    response = await client.aio.models.generate_content(
         model=_get_model(),
         contents=prompt,
         config=config,

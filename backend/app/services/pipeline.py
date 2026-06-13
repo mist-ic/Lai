@@ -55,7 +55,8 @@ async def run_analysis_pipeline(contract_id: str, db_url: str) -> None:
         logger.info("Step 1/4: Parsing document...")
 
         try:
-            parsed = parse_document(contract.file_path)
+            import asyncio
+            parsed = await asyncio.to_thread(parse_document, contract.file_path)
         except Exception as e:
             logger.error(f"Parsing failed: {e}")
             _update_status(db, contract, "error")

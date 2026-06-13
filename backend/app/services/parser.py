@@ -23,7 +23,9 @@ def parse_document(file_path: str) -> dict:
             - raw_text: Plain text extraction
             - sections: List of detected sections with hierarchy
     """
-    from docling.document_converter import DocumentConverter
+    from docling.document_converter import DocumentConverter, PdfFormatOption
+    from docling.datamodel.base_models import InputFormat
+    from docling.datamodel.pipeline_options import PdfPipelineOptions
 
     path = Path(file_path)
     if not path.exists():
@@ -35,7 +37,14 @@ def parse_document(file_path: str) -> dict:
 
     logger.info(f"Parsing document: {path.name} ({ext})")
 
-    converter = DocumentConverter()
+    pipeline_options = PdfPipelineOptions()
+    pipeline_options.do_ocr = False
+
+    converter = DocumentConverter(
+        format_options={
+            InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options)
+        }
+    )
     result = converter.convert(str(path))
     doc = result.document
 
@@ -47,8 +56,15 @@ def parse_document(file_path: str) -> dict:
     sections = _extract_sections(doc)
 
     # Get the full JSON structure
-    import json
-    structure = json.loads(doc.export_to_json())
+    try:
+        structure = doc.export_to_dict()
+    except AttributeError:
+        # Fallback if export_to_dict is not available (e.g. older versions)
+        import json
+        try:
+            structure = json.loads(doc.model_dump_json())
+        except AttributeError:
+            structure = {}
 
     logger.info(
         f"Parsed {path.name}: {len(sections)} sections, "
@@ -167,10 +183,19 @@ def chunk_document(file_path: str, max_tokens: int = 512) -> list[dict]:
     Returns:
         List of chunk dicts with text and metadata.
     """
-    from docling.document_converter import DocumentConverter
+    from docling.document_converter import DocumentConverter, PdfFormatOption
     from docling.chunking import HybridChunker
+    from docling.datamodel.base_models import InputFormat
+    from docling.datamodel.pipeline_options import PdfPipelineOptions
 
-    converter = DocumentConverter()
+    pipeline_options = PdfPipelineOptions()
+    pipeline_options.do_ocr = False
+
+    converter = DocumentConverter(
+        format_options={
+            InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options)
+        }
+    )
     result = converter.convert(file_path)
 
     chunker = HybridChunker(max_tokens=max_tokens)
