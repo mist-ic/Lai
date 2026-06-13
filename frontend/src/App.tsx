@@ -6,6 +6,8 @@ import { UploadPage } from './pages/UploadPage';
 import { ContractPage } from './pages/ContractPage';
 import { ComparePage } from './pages/ComparePage';
 import { ChatPage } from './pages/ChatPage';
+import { ErrorBoundary } from './components/ui/ErrorBoundary';
+import { Toaster } from './components/ui/Toast';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,17 +21,20 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<AppLayout />}>
-            <Route index element={<DashboardPage />} />
-            <Route path="upload" element={<UploadPage />} />
-            <Route path="contracts/:id" element={<ContractPage />} />
-            <Route path="compare" element={<ComparePage />} />
-            <Route path="contracts/:id/chat" element={<ChatPage />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<AppLayout />}>
+              <Route index element={<DashboardPage />} />
+              <Route path="upload" element={<UploadPage />} />
+              <Route path="contracts/:id" element={<ContractPage />} />
+              <Route path="compare" element={<ComparePage />} />
+              <Route path="contracts/:id/chat" element={<ChatPage />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+        <Toaster />
+      </ErrorBoundary>
     </QueryClientProvider>
   );
 }

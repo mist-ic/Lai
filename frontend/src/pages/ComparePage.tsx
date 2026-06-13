@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   GitCompareArrows,
@@ -8,6 +8,16 @@ import {
 } from 'lucide-react';
 import { getContracts, compareContracts, type CompareResult } from '../lib/api';
 import { cn, getClauseTypeLabel, getRiskBgColor } from '../lib/utils';
+import { Skeleton } from '../components/ui/Skeleton';
+
+const LOADING_MESSAGES = [
+  'Analyzing selected contracts...',
+  'Extracting clause information...',
+  'Comparing clause language...',
+  'Evaluating risk exposure...',
+  'Checking market-standard deviations...',
+  'Generating insights...',
+];
 
 const CLAUSE_TYPES = [
   'indemnity',
@@ -25,6 +35,18 @@ export function ComparePage() {
   const [compareResult, setCompareResult] = useState<CompareResult | null>(null);
   const [isComparing, setIsComparing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loadingStep, setLoadingStep] = useState(0);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isComparing) {
+      setLoadingStep(0);
+      interval = setInterval(() => {
+        setLoadingStep((prev) => (prev < LOADING_MESSAGES.length - 1 ? prev + 1 : prev));
+      }, 1500);
+    }
+    return () => clearInterval(interval);
+  }, [isComparing]);
 
   const { data: contracts = [] } = useQuery({
     queryKey: ['contracts'],
@@ -49,6 +71,7 @@ export function ComparePage() {
       return;
     }
     setError(null);
+    setCompareResult(null); // Clear previous results while loading
     setIsComparing(true);
     try {
       const result = await compareContracts(selectedContracts, selectedClauseType);
@@ -193,15 +216,59 @@ export function ComparePage() {
         </div>
       </div>
 
+      {/* Loading State */}
+      {isComparing && (
+        <div className="glass-card rounded-xl p-6 animate-fade-in mb-8">
+          <div className="flex flex-col items-center justify-center py-8">
+            <Loader2 className="h-10 w-10 animate-spin text-indigo-500 mb-6" />
+            <p className="text-xl font-medium text-white tracking-wide">
+              {LOADING_MESSAGES[loadingStep]}
+            </p>
+          </div>
+          
+          <div 
+            className={cn(
+              "grid gap-4",
+              selectedContracts.length === 2 ? "grid-cols-1 lg:grid-cols-2" :
+              selectedContracts.length === 3 ? "grid-cols-1 md:grid-cols-3" :
+              "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+            )}
+          >
+            {selectedContracts.map((id) => (
+              <div key={id} className="bg-[var(--color-background)] rounded-lg p-4 border border-[var(--color-border)]">
+                <div className="flex items-center justify-between mb-4">
+                  <Skeleton className="h-5 w-1/2" />
+                  <Skeleton className="h-5 w-12 rounded-full" />
+                </div>
+                <div className="space-y-2">
+                  <Skeleton className="h-3 w-full" />
+                  <Skeleton className="h-3 w-[90%]" />
+                  <Skeleton className="h-3 w-[95%]" />
+                  <Skeleton className="h-3 w-[80%]" />
+                </div>
+                <Skeleton className="h-3 w-2/3 mt-4" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Results */}
-      {compareResult && (
+      {!isComparing && compareResult && (
         <div className="glass-card rounded-xl p-6 animate-fade-in">
           <h2 className="text-lg font-semibold text-[var(--color-foreground)] mb-4">
             Comparison: {getClauseTypeLabel(compareResult.clause_type)}
           </h2>
 
           {/* Side by side clauses */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+          <div 
+            className={cn(
+              "grid gap-4 mb-6",
+              compareResult.comparisons.length === 2 ? "grid-cols-1 lg:grid-cols-2" :
+              compareResult.comparisons.length === 3 ? "grid-cols-1 md:grid-cols-3" :
+              "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+            )}
+          >
             {compareResult.comparisons.map((comp) => (
               <div
                 key={comp.contract_id}

@@ -21,12 +21,14 @@ import {
   getRiskBgColor,
   getRiskScoreColor,
 } from '../lib/utils';
+import { Skeleton } from '../components/ui/Skeleton';
+import { toastSuccess, toastError } from '../components/ui/Toast';
 
 export function DashboardPage() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { data: contracts = [], isLoading } = useQuery({
+  const { data: contracts = [], isLoading, isError, refetch } = useQuery({
     queryKey: ['contracts'],
     queryFn: getContracts,
     refetchInterval: 5000, // Poll for status updates
@@ -34,7 +36,11 @@ export function DashboardPage() {
 
   const deleteMutation = useMutation({
     mutationFn: deleteContract,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['contracts'] }),
+    onSuccess: () => {
+      toastSuccess('Contract deleted successfully');
+      queryClient.invalidateQueries({ queryKey: ['contracts'] });
+    },
+    onError: () => toastError('Failed to delete contract'),
   });
 
   // Stats
@@ -108,7 +114,7 @@ export function DashboardPage() {
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="glass-card rounded-xl p-5 animate-slide-in"
+            className="glass-card rounded-xl p-5 animate-slide-in hover:scale-[1.02] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[var(--color-primary)]/5 transition-all duration-300"
           >
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm text-[var(--color-muted-foreground)]">
@@ -140,8 +146,51 @@ export function DashboardPage() {
         </div>
 
         {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-[var(--color-primary)]" />
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-[var(--color-border)]">
+                  <th className="text-left px-6 py-3 text-xs font-semibold uppercase tracking-wider text-[var(--color-muted-foreground)]">Contract</th>
+                  <th className="text-left px-6 py-3 text-xs font-semibold uppercase tracking-wider text-[var(--color-muted-foreground)]">Status</th>
+                  <th className="text-left px-6 py-3 text-xs font-semibold uppercase tracking-wider text-[var(--color-muted-foreground)]">Risk Score</th>
+                  <th className="text-left px-6 py-3 text-xs font-semibold uppercase tracking-wider text-[var(--color-muted-foreground)]">Risk Level</th>
+                  <th className="text-left px-6 py-3 text-xs font-semibold uppercase tracking-wider text-[var(--color-muted-foreground)]">Uploaded</th>
+                  <th className="text-right px-6 py-3 text-xs font-semibold uppercase tracking-wider text-[var(--color-muted-foreground)]">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--color-border)]">
+                {[...Array(5)].map((_, i) => (
+                  <tr key={i}>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <Skeleton className="h-8 w-8 rounded-lg" />
+                        <div className="space-y-2">
+                          <Skeleton className="h-4 w-32" />
+                          <Skeleton className="h-3 w-16" />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4"><Skeleton className="h-4 w-24" /></td>
+                    <td className="px-6 py-4"><Skeleton className="h-6 w-12" /></td>
+                    <td className="px-6 py-4"><Skeleton className="h-6 w-20 rounded-full" /></td>
+                    <td className="px-6 py-4"><Skeleton className="h-4 w-24" /></td>
+                    <td className="px-6 py-4 text-right"><Skeleton className="h-8 w-16 ml-auto" /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : isError ? (
+          <div className="flex flex-col items-center justify-center py-20 text-[var(--color-muted-foreground)]">
+            <AlertTriangle className="h-12 w-12 mb-4 text-red-500 opacity-80" />
+            <p className="text-lg font-medium mb-2 text-red-400">Failed to load contracts</p>
+            <p className="text-sm mb-6">There was a problem communicating with the server.</p>
+            <button
+              onClick={() => refetch()}
+              className="px-4 py-2 rounded-lg bg-[var(--color-primary)] text-white text-sm font-medium hover:opacity-90 transition-opacity"
+            >
+              Retry
+            </button>
           </div>
         ) : contracts.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-[var(--color-muted-foreground)]">
@@ -250,7 +299,12 @@ function ContractRow({
         </div>
       </td>
       <td className="px-6 py-4">
-        {contract.overall_risk_score !== null ? (
+        {isProcessing ? (
+          <div className="flex flex-col gap-1">
+            <Skeleton className="h-8 w-16" />
+            <span className="text-[10px] text-[var(--color-muted-foreground)] animate-pulse">Analyzing...</span>
+          </div>
+        ) : contract.overall_risk_score !== null ? (
           <span
             className="text-2xl font-bold"
             style={{ color: getRiskScoreColor(contract.overall_risk_score) }}
@@ -262,7 +316,9 @@ function ContractRow({
         )}
       </td>
       <td className="px-6 py-4">
-        {contract.risk_level ? (
+        {isProcessing ? (
+          <Skeleton className="h-6 w-20 rounded-full" />
+        ) : contract.risk_level ? (
           <span
             className={cn(
               'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border',

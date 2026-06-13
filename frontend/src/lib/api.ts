@@ -84,7 +84,7 @@ export const uploadContract = async (file: File): Promise<Contract> => {
 
 export const getContracts = async (): Promise<Contract[]> => {
   const { data } = await api.get('/contracts');
-  return data;
+  return data.contracts;
 };
 
 export const getContract = async (id: string): Promise<ContractDetail> => {

@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { uploadContract, triggerAnalysis } from '../lib/api';
 import { cn } from '../lib/utils';
+import { toastSuccess, toastError, toastInfo } from '../components/ui/Toast';
 
 export function UploadPage() {
   const navigate = useNavigate();
@@ -21,6 +22,8 @@ export function UploadPage() {
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
       const contract = await uploadContract(file);
+      toastSuccess('Upload successful');
+      toastInfo('Analysis started...');
       // Auto-trigger analysis after upload
       await triggerAnalysis(contract.id);
       return contract;
@@ -29,7 +32,9 @@ export function UploadPage() {
       navigate(`/contracts/${contract.id}`);
     },
     onError: (err: any) => {
-      setError(err.response?.data?.detail || 'Upload failed. Please try again.');
+      const msg = err.response?.data?.detail || 'Upload failed. Please try again.';
+      toastError(msg);
+      setError(msg);
     },
   });
 
