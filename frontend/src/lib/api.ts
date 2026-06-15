@@ -61,6 +61,11 @@ export interface CompareResult {
     risk_score: number | null;
     deviation: string | null;
   }>;
+  ai_summary: string | null;
+  key_differences: Array<any> | null;
+  most_favorable: string | null;
+  most_risky: string | null;
+  recommendation: string | null;
 }
 
 export interface ChatMessage {

@@ -52,6 +52,7 @@ class CompareRequest(BaseModel):
 class ClauseComparison(BaseModel):
     """Single clause comparison entry."""
     contract_id: str
+    contract_name: str = ""
     clause_text: str
     risk_score: float | None = None
     deviation: str | None = None
@@ -61,6 +62,11 @@ class CompareResult(BaseModel):
     """Result of comparing clauses across contracts."""
     clause_type: str
     comparisons: list[ClauseComparison]
+    ai_summary: str | None = None
+    key_differences: list[dict] | None = None
+    most_favorable: str | None = None
+    most_risky: str | None = None
+    recommendation: str | None = None
 
 
 class ChatRequest(BaseModel):

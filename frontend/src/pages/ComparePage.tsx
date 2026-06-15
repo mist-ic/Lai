@@ -241,6 +241,54 @@ export function ComparePage() {
               </div>
             ))}
           </div>
+
+          {/* AI Analysis */}
+          {compareResult.ai_summary && (
+            <div className="border-t border-[var(--color-border)] pt-6 space-y-4">
+              <div className="bg-[var(--color-background)] rounded-lg p-4">
+                <p className="text-xs font-semibold text-[var(--color-muted-foreground)] uppercase tracking-wider mb-2">
+                  AI Analysis
+                </p>
+                <p className="text-sm text-[var(--color-secondary-foreground)] leading-relaxed">
+                  {compareResult.ai_summary}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {compareResult.most_favorable && (
+                  <div className="bg-green-500/5 border border-green-500/20 rounded-lg p-4">
+                    <p className="text-xs font-semibold text-green-400 uppercase tracking-wider mb-1">
+                      Most Favorable
+                    </p>
+                    <p className="text-sm text-[var(--color-foreground)]">
+                      {compareResult.most_favorable}
+                    </p>
+                  </div>
+                )}
+                {compareResult.most_risky && (
+                  <div className="bg-red-500/5 border border-red-500/20 rounded-lg p-4">
+                    <p className="text-xs font-semibold text-red-400 uppercase tracking-wider mb-1">
+                      Most Risky
+                    </p>
+                    <p className="text-sm text-[var(--color-foreground)]">
+                      {compareResult.most_risky}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {compareResult.recommendation && (
+                <div className="bg-[var(--color-primary)]/5 border border-[var(--color-primary)]/20 rounded-lg p-4">
+                  <p className="text-xs font-semibold text-[var(--color-primary)] uppercase tracking-wider mb-1">
+                    Recommendation
+                  </p>
+                  <p className="text-sm text-[var(--color-secondary-foreground)]">
+                    {compareResult.recommendation}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>

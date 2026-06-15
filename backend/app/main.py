@@ -1,3 +1,4 @@
+import logging
 import os
 from contextlib import asynccontextmanager
 
@@ -5,9 +6,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.database import engine, Base
+from app.database import engine, Base, SessionLocal
 from app.models import Contract, Clause, Baseline  # noqa: F401 - ensure models are registered
 from app.routers import contracts, analysis, compare, chat, baselines
+
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
@@ -16,6 +19,23 @@ async def lifespan(app: FastAPI):
     # Startup: create upload directory and database tables
     os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
     Base.metadata.create_all(bind=engine)
+
+    # Seed market-standard baselines (idempotent)
+    try:
+        from app.seed_baselines import seed_baselines
+        db = SessionLocal()
+        try:
+            result = seed_baselines(db)
+            logger.info(
+                "Baselines seeded: %d inserted, %d updated",
+                result["inserted"],
+                result["updated"],
+            )
+        finally:
+            db.close()
+    except Exception as e:
+        logger.warning("Baseline seeding skipped: %s", e)
+
     yield
     # Shutdown: cleanup if needed
 
