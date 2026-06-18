@@ -95,16 +95,16 @@ Expected behavior: each comparison should return one entry per contract. AI comp
 
 ## Screenshot Checklist
 
-Save screenshots in `tests/screenshots/` using these suggested names:
+Current screenshots saved in `tests/screenshots/`:
 
 | Screenshot | What it should show |
 | --- | --- |
-| `01-upload-standard-nda.png` | Standard NDA selected or uploaded in the UI. |
-| `02-standard-nda-analysis.png` | Completed NDA analysis with extracted clauses. |
-| `03-risky-saas-analysis.png` | Completed SaaS analysis showing elevated risk. |
-| `04-employment-analysis.png` | Completed employment contract analysis showing high risk. |
-| `05-compare-limitation-liability.png` | Comparison view for limitation of liability across all three contracts. |
-| `06-chat-employment.png` | Chat answer for one employment contract risk question. |
+| `dashboard-overview.png` | Dashboard with contract counts, analyzed count, high-risk count, average risk score, and recent contracts. |
+| `analysis-extracting.png` | Contract analysis progress while extracting key provisions. |
+| `analysis-preparing-results.png` | Contract analysis progress while preparing results. |
+| `contract-risk-overview.png` | Contract detail page with overall risk score, risk breakdown, and clause overview. |
+| `extracted-clauses.png` | Extracted clauses list with risk scores and deviation labels. |
+| `compare-confidentiality.png` | Comparison view for confidentiality clauses across selected contracts. |
 
 ## Manual Result Log
 
@@ -121,4 +121,3 @@ Fill this section after running the checks:
 | Clause comparison works across all contracts | Pending |  |
 | Five chat questions answered per contract | Pending |  |
 | UI screenshots captured | Pending |  |
-

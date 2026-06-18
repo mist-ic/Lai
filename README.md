@@ -18,7 +18,24 @@ Please consult the relevant files below:
 
 ---
 
+## Screenshots
+
+| Dashboard | Analysis Progress |
+|-----------|-------------------|
+| ![Dashboard overview](tests/screenshots/dashboard-overview.png) | ![Contract analysis](tests/screenshots/analysis-extracting.png) |
+
+| Risk Overview | Extracted Clauses |
+|---------------|-------------------|
+| ![Contract risk overview](tests/screenshots/contract-risk-overview.png) | ![Extracted clauses](tests/screenshots/extracted-clauses.png) |
+
+| Clause Comparison |
+|-------------------|
+| ![Confidentiality clause comparison](tests/screenshots/compare-confidentiality.png) |
+
+---
+
 ## ⚡ 60-Second Quickstart
+
 
 If your machine already has Node.js 18+, Python 3.11+, and Docker running, use this checklist to boot up the system instantly:
 
