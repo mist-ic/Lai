@@ -1,6 +1,8 @@
-# Lai — Legal Document Intelligence System
+# Lai - Legal Document Intelligence System
 
 A contract analysis platform that surfaces the critical 10% of a contract requiring human legal decisions while handling the other 90% automatically. Using advanced local parsing models and AI, Lai helps teams streamline contract review, risk mitigation, and side-by-side legal comparison.
+
+🔗 **Live Demo:** [lai-nine.vercel.app](https://lai-nine.vercel.app)
 
 ---
 
